@@ -4,7 +4,7 @@ const mockAppointments = [
     name: "Tonnie Dendle",
     barber: "Santiago",
     date: "2025-10-20T09:00:00",
-    phone_number: 1673340877,
+    phone: 1673340877,
     message: "",
   },
   {
@@ -12,7 +12,7 @@ const mockAppointments = [
     name: "Tiffy Fearn",
     barber: "Santiago",
     date: "2025-10-13:00:00",
-    phone_number: 7685543066,
+    phone: 7685543066,
     message: "consequat ut nulla sed accumsan felis ut at dolor",
   },
   {
@@ -20,7 +20,7 @@ const mockAppointments = [
     name: "Harvey Joselson",
     barber: "Daniel",
     date: "2024-10-26T09:00:00",
-    phone_number: 7472282013,
+    phone: 7472282013,
     message: "lobortis est phasellus sit amet erat nulla tempus",
   },
   {
@@ -28,7 +28,7 @@ const mockAppointments = [
     name: "Raddy Hotton",
     barber: "Santiago",
     date: "2025-10-17T09:00:00",
-    phone_number: 9274370103,
+    phone: 9274370103,
     message:
       "pharetra magna vestibulum aliquet ultrices erat tortor sollicitudin",
   },
@@ -37,7 +37,7 @@ const mockAppointments = [
     name: "Fayette Foxworthy",
     barber: "Santiago",
     date: "2025-10-16T09:00:00",
-    phone_number: 1345013536,
+    phone: 1345013536,
     message: "nonummy integer non velit donec",
   },
   {
@@ -45,7 +45,7 @@ const mockAppointments = [
     name: "Marylee Raine",
     barber: "Daniel",
     date: "2025-10-16T09:00:00",
-    phone_number: 2716521663,
+    phone: 2716521663,
     message: "donec ut dolor morbi vel lectus in",
   },
   {
@@ -53,7 +53,7 @@ const mockAppointments = [
     name: "Drusie Didsbury",
     barber: "Luca",
     date: "2025-10-16T09:00:00",
-    phone_number: 3512112268,
+    phone: 3512112268,
     message: "",
   },
   {
@@ -61,7 +61,7 @@ const mockAppointments = [
     name: "Serge Kopta",
     barber: "Luca",
     date: "2025-10-14T14:00:00",
-    phone_number: 7885728538,
+    phone: 7885728538,
     message: "quis turpis sed ante vivamus tortor duis mattis",
   },
   {
@@ -69,7 +69,7 @@ const mockAppointments = [
     name: "Chandler Janc",
     barber: "Santiago",
     date: "2025-10-10T15:00:00",
-    phone_number: 4007071892,
+    phone: 4007071892,
     message: "",
   },
   {
@@ -77,7 +77,7 @@ const mockAppointments = [
     name: "Keene Dawidowsky",
     barber: "Daniel",
     date: "2024-10-26T15:00:00",
-    phone_number: 4935400438,
+    phone: 4935400438,
     message: "sagittis nam congue risus semper porta",
   },
 ];

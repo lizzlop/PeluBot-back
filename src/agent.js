@@ -1,8 +1,13 @@
 import OpenAI from "openai";
-import readline from "readline";
+import readline from "node:readline";
 import "dotenv/config";
 import { SYSTEM_PROMPT } from "./utils/utils.js";
-import { createAppointment } from "./functions/createAppointment.js";
+import {
+  checkAppointmentAvailability,
+  createAppointment,
+  deleteAppointment,
+  rescheduleAppointment,
+} from "./functions/handleAppointments.js";
 
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -39,6 +44,22 @@ export const functionHandler = {
   createAppointment: (args) => {
     const [name, barber, date, phone, message] = args;
     return createAppointment(name, barber, date, phone, message);
+  },
+  checkAppointmentAvailability: (args) => {
+    const [date, barber] = args;
+    return checkAppointmentAvailability(date, barber);
+  },
+  checkBarbersAvailability: (args) => {
+    const [date] = args;
+    return createAppointment(date);
+  },
+  rescheduleAppointment: (args) => {
+    const [newBarber, oldDate, newDate, phone] = args;
+    return rescheduleAppointment(newBarber, oldDate, newDate, phone);
+  },
+  deleteAppointment: (args) => {
+    const [date, phone] = args;
+    return deleteAppointment(date, phone);
   },
 };
 

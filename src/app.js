@@ -2,16 +2,22 @@ import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import mockAppointments from "./mock/mockDates.js";
 import { interpret } from "./agent.js";
-import { createAppointment } from "./functions/createAppointment.js";
+import {
+  checkAppointmentAvailability,
+  createAppointment,
+} from "./functions/handleAppointments.js";
 
 const typeDefs = `
   type Query {
     getAppointments: [appointment]
     getAppointmentsByBarber(barber: String!): [appointment]
+    checkAppointmentAvailability(date: String!, barber: String): Boolean!
   }
 
   type Mutation {
-    createAppointment(name: String!, barber: String!, date: String!, time: String!): appointment
+    createAppointment(name: String!, barber: String!, date: String!): appointment
+    rescheduleAppointment(barber: String, oldDate: String!, newDate: String!, phone: Int!): appointment
+    deleteAppointment(date: String!, barber: String, , phone: Int!): Boolean!
   }
 
   type appointment {
@@ -19,7 +25,8 @@ const typeDefs = `
     name: String
     barber: String
     date: String
-    time: String
+    phone: Int
+    message: String
   }
 `;
 
@@ -33,6 +40,9 @@ const resolvers = {
       return mockAppointments.filter(
         (appointment) => appointment.barber == args.barber
       );
+    },
+    checkAppointmentAvailability: (parent, args) => {
+      return checkAppointmentAvailability(args.date, args.barber);
     },
   },
   Mutation: {
