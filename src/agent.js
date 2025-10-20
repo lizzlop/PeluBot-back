@@ -3,7 +3,6 @@ import readline from "node:readline";
 import "dotenv/config";
 import { SYSTEM_PROMPT } from "./utils/utils.js";
 import {
-  checkAppointmentAvailability,
   createAppointment,
   deleteAppointment,
   rescheduleAppointment,
@@ -45,14 +44,6 @@ export const functionHandler = {
     const [name, barber, date, phone, message] = args;
     return createAppointment(name, barber, date, phone, message);
   },
-  checkAppointmentAvailability: (args) => {
-    const [date, barber] = args;
-    return checkAppointmentAvailability(date, barber);
-  },
-  checkBarbersAvailability: (args) => {
-    const [date] = args;
-    return createAppointment(date);
-  },
   rescheduleAppointment: (args) => {
     const [newBarber, oldDate, newDate, phone] = args;
     return rescheduleAppointment(newBarber, oldDate, newDate, phone);
@@ -68,47 +59,53 @@ const processLLMResponse = async (response) => {
   try {
     const parsedResponse = JSON.parse(response);
 
+    // Case 1: the model wants to use a function
     if (parsedResponse.to === "system" && parsedResponse.function_call) {
       const { function: functionName, arguments: args } =
         parsedResponse.function_call;
 
       if (functionHandler[functionName]) {
-        console.log(
-          `🔧 Ejecutando función: ${functionName} con argumentos:`,
-          args
-        );
+        console.log(`🔧 Ejecutando función: ${functionName}`, args);
+
         const result = functionHandler[functionName](args);
-        console.log("✅ Resultado:", result);
-        return `Función ${functionName} ejecutada exitosamente. Resultado: ${JSON.stringify(
-          result
-        )}`;
+        console.log("✅ Resultado función:", result);
+
+        // sends back the result so the model can decide what to answer
+        const followUpResponse = await sendtoLLM(
+          JSON.stringify({
+            to: "system",
+            message: `Resultado de ${functionName}: ${JSON.stringify(result)}`,
+          })
+        );
+
+        console.log("🧠 Respuesta final del modelo:", followUpResponse);
+        return followUpResponse;
       } else {
         console.log(`❌ Función no encontrada: ${functionName}`);
-        return `Error: La función ${functionName} no está disponible.`;
+        return "Error: función no disponible.";
       }
-    } else if (parsedResponse.to === "user") {
-      return parsedResponse.message;
-    } else {
-      return response;
     }
+
+    // Case 2: the model wants to just answer to te user
+    if (parsedResponse.to === "user") {
+      return parsedResponse.message;
+    }
+
+    return response;
   } catch (error) {
-    console.log(
-      "⚠️ Error al parsear respuesta JSON, devolviendo respuesta directa:",
-      error.message
-    );
-    return response; // Si no es JSON válido, devolver la respuesta tal como está
+    console.log("⚠️ Error al parsear JSON:", error.message);
+    return response;
   }
 };
 
 export const interpret = async () => {
-  let running = true;
-  while (running) {
+  while (true) {
     const input = await new Promise((resolve) => {
       rl.question("Say something (escribe 'exit' para salir): ", resolve);
     });
 
+    //TODO: Agregar de mejor forma lo de exit
     if (input.toLowerCase() === "exit") {
-      running = false;
       rl.close();
       break;
     }

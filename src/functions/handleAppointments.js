@@ -1,26 +1,5 @@
 import mockAppointments from "../mock/mockDates.js";
-import { barbers } from "../utils/utils.js";
-
-// Function to create appointments
-export const createAppointment = (name, barber, date, phone, message) => {
-  const newAppointment = {
-    id: mockAppointments.length + 1,
-    name,
-    barber,
-    date,
-    phone,
-    message,
-  };
-  mockAppointments.push(newAppointment);
-  return newAppointment;
-};
-
-// Function to check if an appointment is available with a barber
-export const checkAppointmentAvailability = (date, barber) => {
-  return mockAppointments.some(
-    (appointment) => appointment.date == date && appointment.barber == barber
-  );
-};
+import { barbers, bussinessHours } from "../utils/utils.js";
 
 // Function to check which barbers are avaliable in a date
 export const checkBarbersAvailability = (targetDate) => {
@@ -33,6 +12,94 @@ export const checkBarbersAvailability = (targetDate) => {
   );
 };
 
+// Function to check if an appointment is available with a barber
+const isAppointmentTaken = (date, barber) => {
+  console.log(
+    "🎉 funcion isAppointmentTaken con date ",
+    date,
+    "y barbero ",
+    barber
+  );
+  if (
+    mockAppointments.some(
+      (appointment) => appointment.date == date && appointment.barber == barber
+    )
+  ) {
+    return {
+      success: false,
+      message: `La fecha y hora ya están ocupadas con ese barbero. Los barberos disponibles en ese horario son: ${checkBarbersAvailability(
+        date
+      )}`,
+    };
+  }
+};
+
+// Function to check if the date for creating an appointment is correct
+const isScheduleOkay = (date) => {
+  const actualDate = new Date();
+  const appointmentDate = new Date(date);
+  if (appointmentDate < actualDate) {
+    return {
+      success: false,
+      message: "La fecha y hora son anteriores a la fecha actual",
+    };
+  }
+  const time = appointmentDate.toTimeString().split(" ")[0];
+  if (time < bussinessHours[0]) {
+    return {
+      success: false,
+      message: `La hora es antes de la hora de apertura de la barbería: ${bussinessHours[0]}`,
+    };
+  }
+  if (time < bussinessHours[bussinessHours.at(-1)]) {
+    return {
+      success: false,
+      message: `El último turno disponible es a las: ${
+        bussinessHours[bussinessHours.at(-1)]
+      }`,
+    };
+  }
+  if (!bussinessHours.includes(time)) {
+    return {
+      success: false,
+      message: `El horario seleccionado no está disponible. Por favor elige una hora entre las permitidas: ${bussinessHours}`,
+    };
+  }
+};
+
+// Function to create appointments
+export const createAppointment = (name, barber, date, phone, message) => {
+  console.log(
+    "🎉 ingresa a createAppointment con: ",
+    name,
+    barber,
+    date,
+    phone,
+    message
+  );
+  const checkAppointment =
+    isScheduleOkay(date) || isAppointmentTaken(date, barber);
+  console.log("checkApp", checkAppointment);
+  if (checkAppointment) return checkAppointment;
+
+  const newAppointment = {
+    id: mockAppointments.length + 1,
+    name,
+    barber,
+    date,
+    phone,
+    message,
+  };
+  mockAppointments.push(newAppointment);
+  console.log("🎉 mockAppointments 10", mockAppointments[10]);
+
+  return {
+    success: true,
+    message: "Cita creada con éxito.",
+    appointment: newAppointment,
+  };
+};
+
 // Function to reschedule an appointment
 export const rescheduleAppointment = (newBarber, oldDate, newDate, phone) => {
   const appointmentToReschedule = mockAppointments.find(
@@ -41,18 +108,20 @@ export const rescheduleAppointment = (newBarber, oldDate, newDate, phone) => {
   if (appointmentToReschedule) {
     createAppointment(
       appointmentToReschedule.name,
-      newBarber ? newBarber : appointmentToReschedule.barber,
+      newBarber || appointmentToReschedule.barber,
       newDate,
       appointmentToReschedule.phone,
       "Cita reprogramada"
     );
-    mockAppointments = mockAppointments.filter(
-      (appointment) => appointment.id != appointmentToReschedule.id
+    const indexToRemove = mockAppointments.findIndex(
+      (appointment) => appointment.id == appointmentToReschedule.id
     );
+    if (indexToRemove !== -1) {
+      mockAppointments.splice(indexToRemove, 1);
+    }
   } else {
     throw new Error("the appointment is not found");
   }
-
   console.log("🎉 mockAppointments after delete", mockAppointments);
   return true;
 };
@@ -63,9 +132,12 @@ export const deleteAppointment = (date, phone) => {
     (appointment) => appointment.date == date && appointment.phone == phone
   );
   if (appointmentToDelete) {
-    mockAppointments = mockAppointments.filter(
-      (appointment) => appointment.id != appointmentToDelete.id
+    const indexToRemove = mockAppointments.findIndex(
+      (appointment) => appointment.id == appointmentToDelete.id
     );
+    if (indexToRemove !== -1) {
+      mockAppointments.splice(indexToRemove, 1);
+    }
   }
   console.log("🎉 mockAppointments after delete", mockAppointments);
   return true;

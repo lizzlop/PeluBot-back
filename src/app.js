@@ -2,16 +2,12 @@ import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import mockAppointments from "./mock/mockDates.js";
 import { interpret } from "./agent.js";
-import {
-  checkAppointmentAvailability,
-  createAppointment,
-} from "./functions/handleAppointments.js";
+import { createAppointment } from "./functions/handleAppointments.js";
 
 const typeDefs = `
   type Query {
     getAppointments: [appointment]
     getAppointmentsByBarber(barber: String!): [appointment]
-    checkAppointmentAvailability(date: String!, barber: String): Boolean!
   }
 
   type Mutation {
@@ -40,9 +36,6 @@ const resolvers = {
       return mockAppointments.filter(
         (appointment) => appointment.barber == args.barber
       );
-    },
-    checkAppointmentAvailability: (parent, args) => {
-      return checkAppointmentAvailability(args.date, args.barber);
     },
   },
   Mutation: {
