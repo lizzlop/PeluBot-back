@@ -101,59 +101,60 @@ export const createAppointment = (name, barber, date, phone, message) => {
   };
 };
 
-// Function to reschedule an appointment
-export const rescheduleAppointment = (newBarber, oldDate, newDate, phone) => {
-  const appointmentToReschedule = mockAppointments.find(
-    (appointment) => appointment.date == oldDate && appointment.phone == phone
-  );
-  if (appointmentToReschedule) {
-    createAppointment(
-      appointmentToReschedule.name,
-      newBarber || appointmentToReschedule.barber,
-      newDate,
-      appointmentToReschedule.phone,
-      "Cita reprogramada"
-    );
-    const indexToRemove = mockAppointments.findIndex(
-      (appointment) => appointment.id == appointmentToReschedule.id
-    );
-    if (indexToRemove !== -1) {
-      mockAppointments.splice(indexToRemove, 1);
-    }
-  } else {
-    return {
-      success: false,
-      message: `La cita que intentas reprogramar no fue encontrada.`,
-    };
-  }
-  console.log("🎉 mockAppointments after delete", mockAppointments);
-  return true;
-};
-
 // Function to confirm the appointment before deleting it
-export const requestAppointmentDeletion = (date, phone) => {
-  const appointmentToDelete = mockAppointments.find(
+export const confirmAppointment = (date, phone) => {
+  const appointmentToConfirm = mockAppointments.find(
     (appointment) => appointment.date == date && appointment.phone == phone
   );
-  if (appointmentToDelete) {
+  if (appointmentToConfirm) {
     return {
       success: true,
-      message: `${appointmentToDelete.name}, tienes una cita con ${appointmentToDelete.barber} el ${appointmentToDelete.date}. ¿Deseas eliminarla?`,
-      appointment: appointmentToDelete,
+      message: `${appointmentToConfirm.name}, tienes una cita con ${appointmentToConfirm.barber} el ${appointmentToConfirm.date}`,
+      appointmentId: appointmentToConfirm.id,
     };
   } else {
     return {
       success: false,
-      message: `La cita que intentas eliminar no fue encontrada.`,
+      message: `La cita no fue encontrada.`,
     };
   }
+};
+
+// Function to reschedule an appointment
+export const rescheduleAppointment = (
+  appointmentId,
+  newDate,
+  newBarber = ""
+) => {
+  const appointmentToReschedule = mockAppointments.find(
+    (app) => app.id == appointmentId
+  );
+  const newAppointment = createAppointment(
+    appointmentToReschedule.name,
+    newBarber || appointmentToReschedule.barber,
+    newDate,
+    appointmentToReschedule.phone,
+    "Cita reprogramada"
+  );
+  const indexToRemove = mockAppointments.findIndex(
+    (appointment) => appointment.id == appointmentId
+  );
+  if (indexToRemove !== -1) {
+    mockAppointments.splice(indexToRemove, 1);
+  }
+  console.log("🎉 mockAppointments after reschedule", mockAppointments);
+  return {
+    success: true,
+    message: `La cita fue reprogramada exitosamente`,
+    appointment: newAppointment.appointment,
+  };
 };
 
 // Function to delete an appointment
-export const deleteAppointment = (appointmentToDelete) => {
+export const deleteAppointment = (appointmentId) => {
   console.log("🎉 entró en delete");
   const indexToRemove = mockAppointments.findIndex(
-    (appointment) => appointment.id == appointmentToDelete.id
+    (appointment) => appointment.id == appointmentId
   );
   if (indexToRemove !== -1) {
     mockAppointments.splice(indexToRemove, 1);
@@ -162,6 +163,5 @@ export const deleteAppointment = (appointmentToDelete) => {
   return {
     success: true,
     message: `La cita fue eliminada exitosamente`,
-    appointment: appointmentToDelete,
   };
 };

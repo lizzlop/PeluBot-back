@@ -2,7 +2,10 @@ import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import mockAppointments from "./mock/mockDates.js";
 import { interpret } from "./agent.js";
-import { createAppointment } from "./functions/handleAppointments.js";
+import {
+  createAppointment,
+  rescheduleAppointment,
+} from "./functions/handleAppointments.js";
 
 const typeDefs = `
   type Query {
@@ -12,8 +15,8 @@ const typeDefs = `
 
   type Mutation {
     createAppointment(name: String!, barber: String!, date: String!): appointment
-    rescheduleAppointment(barber: String, oldDate: String!, newDate: String!, phone: Int!): appointment
-    deleteAppointment(date: String!, barber: String, , phone: Int!): Boolean!
+    rescheduleAppointment(appointmentId: ID!, newDate: String!, barber: String): appointment
+    deleteAppointment(appointmentId: ID!): appointment
   }
 
   type appointment {
@@ -42,6 +45,10 @@ const resolvers = {
     createAppointment: (parent, args) => {
       const { name, barber, date, time } = args;
       return createAppointment(name, barber, date, time);
+    },
+    rescheduleAppointment: (parent, args) => {
+      const { appointmentToReschedule, newDate, barber } = args;
+      return rescheduleAppointment(appointmentToReschedule, newDate, barber);
     },
   },
 };
