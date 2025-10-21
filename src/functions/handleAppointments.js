@@ -35,6 +35,7 @@ const isAppointmentTaken = (date, barber) => {
 };
 
 // Function to check if the date for creating an appointment is correct
+//TODO: Agregar validación de domingos
 const isScheduleOkay = (date) => {
   const actualDate = new Date();
   const appointmentDate = new Date(date);
@@ -120,25 +121,47 @@ export const rescheduleAppointment = (newBarber, oldDate, newDate, phone) => {
       mockAppointments.splice(indexToRemove, 1);
     }
   } else {
-    throw new Error("the appointment is not found");
+    return {
+      success: false,
+      message: `La cita que intentas reprogramar no fue encontrada.`,
+    };
   }
   console.log("🎉 mockAppointments after delete", mockAppointments);
   return true;
 };
 
-// Function to delete an appointment
-export const deleteAppointment = (date, phone) => {
+// Function to confirm the appointment before deleting it
+export const requestAppointmentDeletion = (date, phone) => {
   const appointmentToDelete = mockAppointments.find(
     (appointment) => appointment.date == date && appointment.phone == phone
   );
   if (appointmentToDelete) {
-    const indexToRemove = mockAppointments.findIndex(
-      (appointment) => appointment.id == appointmentToDelete.id
-    );
-    if (indexToRemove !== -1) {
-      mockAppointments.splice(indexToRemove, 1);
-    }
+    return {
+      success: true,
+      message: `${appointmentToDelete.name}, tienes una cita con ${appointmentToDelete.barber} el ${appointmentToDelete.date}. ¿Deseas eliminarla?`,
+      appointment: appointmentToDelete,
+    };
+  } else {
+    return {
+      success: false,
+      message: `La cita que intentas eliminar no fue encontrada.`,
+    };
+  }
+};
+
+// Function to delete an appointment
+export const deleteAppointment = (appointmentToDelete) => {
+  console.log("🎉 entró en delete");
+  const indexToRemove = mockAppointments.findIndex(
+    (appointment) => appointment.id == appointmentToDelete.id
+  );
+  if (indexToRemove !== -1) {
+    mockAppointments.splice(indexToRemove, 1);
   }
   console.log("🎉 mockAppointments after delete", mockAppointments);
-  return true;
+  return {
+    success: true,
+    message: `La cita fue eliminada exitosamente`,
+    appointment: appointmentToDelete,
+  };
 };

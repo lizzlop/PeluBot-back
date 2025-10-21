@@ -5,6 +5,7 @@ import { SYSTEM_PROMPT } from "./utils/utils.js";
 import {
   createAppointment,
   deleteAppointment,
+  requestAppointmentDeletion,
   rescheduleAppointment,
 } from "./functions/handleAppointments.js";
 
@@ -48,9 +49,13 @@ export const functionHandler = {
     const [newBarber, oldDate, newDate, phone] = args;
     return rescheduleAppointment(newBarber, oldDate, newDate, phone);
   },
-  deleteAppointment: (args) => {
+  requestAppointmentDeletion: (args) => {
     const [date, phone] = args;
-    return deleteAppointment(date, phone);
+    return requestAppointmentDeletion(date, phone);
+  },
+  deleteAppointment: (args) => {
+    //const [date, phone] = args;
+    return deleteAppointment(args);
   },
 };
 
