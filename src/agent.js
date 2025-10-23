@@ -102,13 +102,13 @@ const processLLMResponse = async (response) => {
   }
 };
 
-export const interpret = async () => {
+// Function to run the agent in the terminal
+export const runAgentTerminal = async () => {
   while (true) {
     const input = await new Promise((resolve) => {
       rl.question("Say something (escribe 'exit' para salir): ", resolve);
     });
 
-    //TODO: Agregar de mejor forma lo de exit
     if (input.toLowerCase() === "exit") {
       rl.close();
       break;
@@ -119,4 +119,12 @@ export const interpret = async () => {
     const processedResponse = await processLLMResponse(response);
     console.log("response final", processedResponse);
   }
+};
+
+export const runAgent = async (newMessage) => {
+  const response = await sendtoLLM(newMessage);
+  console.log("response inicial", response);
+  const processedResponse = await processLLMResponse(response);
+  console.log("response final", processedResponse);
+  return processedResponse;
 };
