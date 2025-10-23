@@ -44,19 +44,19 @@ const resolvers = {
     },
   },
   Mutation: {
-    createAppointment: (parent, args) => {
+    createAppointment: (_, args) => {
       const { name, barber, date, time } = args;
       return createAppointment(name, barber, date, time);
     },
-    rescheduleAppointment: (parent, args) => {
+    rescheduleAppointment: (_, args) => {
       const { appointmentId, newDate, barber } = args;
       return rescheduleAppointment(appointmentId, newDate, barber);
     },
-    deleteAppointment: (parent, args) => {
+    deleteAppointment: (_, args) => {
       const { appointmentId } = args;
       return deleteAppointment(appointmentId);
     },
-    runAgent: (args) => {
+    runAgent: (_, args) => {
       const { newMessage } = args;
       return runAgent(newMessage);
     },

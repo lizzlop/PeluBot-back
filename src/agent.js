@@ -92,7 +92,11 @@ const processLLMResponse = async (response) => {
 
     // Case 2: the model wants to just answer to te user
     if (parsedResponse.to === "user") {
-      return parsedResponse.message;
+      JSON.stringify({
+        to: "system",
+        message: `Resultado de ${functionName}: ${JSON.stringify(result)}`,
+      });
+      return parsedResponse;
     }
 
     return response;
@@ -122,6 +126,7 @@ export const runAgentTerminal = async () => {
 };
 
 export const runAgent = async (newMessage) => {
+  console.log("🎉 entro run agent");
   const response = await sendtoLLM(newMessage);
   console.log("response inicial", response);
   const processedResponse = await processLLMResponse(response);
