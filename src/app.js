@@ -1,17 +1,18 @@
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import mockAppointments from "./mock/mockDates.js";
-import { runAgent } from "./agent.js";
+import { runAgent, runAgentTerminal } from "./agent.js";
 import {
   createAppointment,
   deleteAppointment,
   rescheduleAppointment,
 } from "./functions/handleAppointments.js";
+import { barbers } from "./utils/utils.js";
 
 const typeDefs = `
   type Query {
     getAppointments: [appointment]
-    getAppointmentsByBarber(barber: String!): [appointment]
+    getBarbers: [barber]
   }
 
   type Mutation {
@@ -29,18 +30,21 @@ const typeDefs = `
     phone: Int
     message: String
   }
+
+  type barber {
+    id: ID!
+    name: String!
+    color: String
+  }
 `;
 
-//TODO: Implementar las resolvers
 const resolvers = {
   Query: {
     getAppointments: () => {
       return mockAppointments;
     },
-    getAppointmentsByBarber: (parent, args) => {
-      return mockAppointments.filter(
-        (appointment) => appointment.barber == args.barber
-      );
+    getBarbers: () => {
+      return barbers;
     },
   },
   Mutation: {
@@ -68,3 +72,5 @@ const server = new ApolloServer({ typeDefs, resolvers });
 await startStandaloneServer(server, {
   listen: { port: 4000 },
 });
+
+//runAgentTerminal();

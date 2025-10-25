@@ -1,5 +1,5 @@
 import mockAppointments from "../mock/mockDates.js";
-import { barbers, bussinessHours } from "../utils/utils.js";
+import { barbers, bussinessHours, days } from "../utils/utils.js";
 
 // Function to check which barbers are avaliable in a date
 export const checkBarbersAvailability = (targetDate) => {
@@ -35,7 +35,6 @@ const isAppointmentTaken = (date, barber) => {
 };
 
 // Function to check if the date for creating an appointment is correct
-//TODO: Agregar validación de domingos
 const isScheduleOkay = (date) => {
   const actualDate = new Date();
   const appointmentDate = new Date(date);
@@ -45,25 +44,31 @@ const isScheduleOkay = (date) => {
       message: "La fecha y hora son anteriores a la fecha actual",
     };
   }
+  const weekDay = days[appointmentDate.getDay()];
+  const avaliableHours = bussinessHours[weekDay];
+  if (!avaliableHours || avaliableHours.length === 0) {
+    return {
+      success: false,
+      message: `El día seleccionado la barbería no tiene servicio.`,
+    };
+  }
   const time = appointmentDate.toTimeString().split(" ")[0];
-  if (time < bussinessHours[0]) {
+  if (time < avaliableHours[0]) {
     return {
       success: false,
-      message: `La hora es antes de la hora de apertura de la barbería: ${bussinessHours[0]}`,
+      message: `La hora es antes de la hora de apertura de la barbería: ${avaliableHours[0]}`,
     };
   }
-  if (time < bussinessHours[bussinessHours.at(-1)]) {
+  if (time > avaliableHours.at(-1)) {
     return {
       success: false,
-      message: `El último turno disponible es a las: ${
-        bussinessHours[bussinessHours.at(-1)]
-      }`,
+      message: `El último turno disponible es a las: ${avaliableHours.at(-1)}`,
     };
   }
-  if (!bussinessHours.includes(time)) {
+  if (!avaliableHours.includes(time)) {
     return {
       success: false,
-      message: `El horario seleccionado no está disponible. Por favor elige una hora entre las permitidas: ${bussinessHours}`,
+      message: `El horario seleccionado no está disponible. Por favor elige una hora entre las permitidas: ${avaliableHours}`,
     };
   }
 };
