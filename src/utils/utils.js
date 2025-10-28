@@ -15,7 +15,23 @@ export const days = [
   "saturday",
 ];
 
-export const barbers = ["Santiago", "Daniel", "Luca"];
+export const barbers = [
+  {
+    id: 1,
+    name: "Santiago",
+    color: "#BB4D00",
+  },
+  {
+    id: 2,
+    name: "Daniel",
+    color: "#497D00",
+  },
+  {
+    id: 3,
+    name: "Luca",
+    color: "#007595",
+  },
+];
 
 export const bussinessHours = {
   monday: [

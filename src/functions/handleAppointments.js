@@ -7,7 +7,7 @@ export const checkBarbersAvailability = (targetDate) => {
     (barber) =>
       !mockAppointments.some(
         (appointment) =>
-          appointment.barber == barber && appointment.date === targetDate
+          appointment.barber == barber.name && appointment.date === targetDate
       )
   );
 };

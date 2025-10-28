@@ -7,16 +7,17 @@ import {
   deleteAppointment,
   rescheduleAppointment,
 } from "./functions/handleAppointments.js";
-import { barbers } from "./utils/utils.js";
+import { barbers, bussinessHours } from "./utils/utils.js";
 
 const typeDefs = `
   type Query {
     getAppointments: [appointment]
     getBarbers: [barber]
+    getBusinessHours: businessHours!
   }
 
   type Mutation {
-    createAppointment(name: String!, barber: String!, date: String!): appointment
+    createAppointment(name: String!, barber: String!, date: String!, phone: String!, message: String): createAppointmentResponse!
     rescheduleAppointment(appointmentId: ID!, newDate: String!, barber: String): appointment
     deleteAppointment(appointmentId: ID!): appointment
     runAgent(newMessage: String!): String!
@@ -36,6 +37,21 @@ const typeDefs = `
     name: String!
     color: String
   }
+
+  type createAppointmentResponse {
+    success: Boolean!
+    message: String!
+  }
+
+  type businessHours {
+  monday: [String!]!
+  tuesday: [String!]!
+  wednesday: [String!]!
+  thursday: [String!]!
+  friday: [String!]!
+  saturday: [String!]!
+  sunday: [String!]!
+}
 `;
 
 const resolvers = {
@@ -44,13 +60,17 @@ const resolvers = {
       return mockAppointments;
     },
     getBarbers: () => {
+      console.log("🎉 entro barbers", barbers);
       return barbers;
+    },
+    getBusinessHours: () => {
+      return bussinessHours;
     },
   },
   Mutation: {
     createAppointment: (_, args) => {
-      const { name, barber, date, time } = args;
-      return createAppointment(name, barber, date, time);
+      const { name, barber, date, phone, message } = args;
+      return createAppointment(name, barber, date, phone, message);
     },
     rescheduleAppointment: (_, args) => {
       const { appointmentId, newDate, barber } = args;
