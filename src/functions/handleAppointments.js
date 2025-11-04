@@ -1,25 +1,20 @@
 import mockAppointments from "../mock/mockDates.js";
-import { barbers, bussinessHours, days } from "../utils/utils.js";
+import { barbers, businessHours, days } from "../utils/utils.js";
 
-// Function to check which barbers are avaliable in a date
+// Function to check which barbers are available in a date
 export const checkBarbersAvailability = (targetDate) => {
-  return barbers.filter(
+  const availableBarbers = barbers.filter(
     (barber) =>
       !mockAppointments.some(
         (appointment) =>
           appointment.barber == barber.name && appointment.date === targetDate
       )
   );
+  return availableBarbers.map((barber) => barber.name).join(", ");
 };
 
 // Function to check if an appointment is available with a barber
 const isAppointmentTaken = (date, barber) => {
-  console.log(
-    "🎉 funcion isAppointmentTaken con date ",
-    date,
-    "y barbero ",
-    barber
-  );
   if (
     mockAppointments.some(
       (appointment) => appointment.date == date && appointment.barber == barber
@@ -44,45 +39,45 @@ const isScheduleOkay = (date) => {
       message: "La fecha y hora son anteriores a la fecha actual",
     };
   }
+  if (appointmentDate > actualDate.setDate(actualDate.getDate() + 7)) {
+    return {
+      success: false,
+      message:
+        "Solo se pueden agendar citas hasta 7 días después de la fecha actual",
+    };
+  }
   const weekDay = days[appointmentDate.getDay()];
-  const avaliableHours = bussinessHours[weekDay];
-  if (!avaliableHours || avaliableHours.length === 0) {
+  const availableHours =
+    businessHours.find((day) => day.day === weekDay)?.hours || [];
+  if (!availableHours || availableHours.length === 0) {
     return {
       success: false,
       message: `El día seleccionado la barbería no tiene servicio.`,
     };
   }
   const time = appointmentDate.toTimeString().split(" ")[0];
-  if (time < avaliableHours[0]) {
+  if (time < availableHours[0]) {
     return {
       success: false,
-      message: `La hora es antes de la hora de apertura de la barbería: ${avaliableHours[0]}`,
+      message: `La hora es antes de la hora de apertura de la barbería: ${availableHours[0]}`,
     };
   }
-  if (time > avaliableHours.at(-1)) {
+  if (time > availableHours.at(-1)) {
     return {
       success: false,
-      message: `El último turno disponible es a las: ${avaliableHours.at(-1)}`,
+      message: `El último turno disponible es a las: ${availableHours.at(-1)}`,
     };
   }
-  if (!avaliableHours.includes(time)) {
+  if (!availableHours.includes(time)) {
     return {
       success: false,
-      message: `El horario seleccionado no está disponible. Por favor elige una hora entre las permitidas: ${avaliableHours}`,
+      message: `El horario seleccionado no está disponible. Por favor elige una hora entre las permitidas: ${availableHours}`,
     };
   }
 };
 
 // Function to create appointments
 export const createAppointment = (name, barber, date, phone, message) => {
-  console.log(
-    "🎉 ingresa a createAppointment con: ",
-    name,
-    barber,
-    date,
-    phone,
-    message
-  );
   const checkAppointment =
     isScheduleOkay(date) || isAppointmentTaken(date, barber);
   console.log("checkApp", checkAppointment);
@@ -97,7 +92,6 @@ export const createAppointment = (name, barber, date, phone, message) => {
     message,
   };
   mockAppointments.push(newAppointment);
-  console.log("🎉 mockAppointments 10", mockAppointments[10]);
 
   return {
     success: true,
@@ -139,7 +133,7 @@ export const rescheduleAppointment = (
     newBarber || appointmentToReschedule.barber,
     newDate,
     appointmentToReschedule.phone,
-    "Cita reprogramada"
+    "Cita re-programada"
   );
   const indexToRemove = mockAppointments.findIndex(
     (appointment) => appointment.id == appointmentId
@@ -147,24 +141,21 @@ export const rescheduleAppointment = (
   if (indexToRemove !== -1) {
     mockAppointments.splice(indexToRemove, 1);
   }
-  console.log("🎉 mockAppointments after reschedule", mockAppointments);
   return {
     success: true,
-    message: `La cita fue reprogramada exitosamente`,
+    message: `La cita fue re-programada exitosamente`,
     appointment: newAppointment.appointment,
   };
 };
 
 // Function to delete an appointment
 export const deleteAppointment = (appointmentId) => {
-  console.log("🎉 entró en delete");
   const indexToRemove = mockAppointments.findIndex(
     (appointment) => appointment.id == appointmentId
   );
   if (indexToRemove !== -1) {
     mockAppointments.splice(indexToRemove, 1);
   }
-  console.log("🎉 mockAppointments after delete", mockAppointments);
   return {
     success: true,
     message: `La cita fue eliminada exitosamente`,

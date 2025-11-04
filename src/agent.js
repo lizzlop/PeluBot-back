@@ -28,15 +28,20 @@ const messages = [
 
 const sendtoLLM = async (content) => {
   messages.push({
-    role: "user",
+    role: content.to === "system" ? "system" : "user",
     content,
   });
-  const response = await client.chat.completions.create({
-    messages,
-    model: "gpt-4o",
-  });
-  messages.push(response.choices[0].message);
-  return response.choices[0].message.content;
+  try {
+    const response = await client.chat.completions.create({
+      messages,
+      model: "gpt-4o",
+    });
+    messages.push(response.choices[0].message);
+    return response.choices[0].message.content;
+  } catch (error) {
+    console.log("❌ error al enviar a LLM", error);
+    return error.message;
+  }
 };
 
 // Function handler for the LLM
@@ -92,14 +97,12 @@ const processLLMResponse = async (response) => {
 
     // Case 2: the model wants to just answer to te user
     if (parsedResponse.to === "user") {
-      JSON.stringify({
-        to: "system",
-        message: `Resultado de ${functionName}: ${JSON.stringify(result)}`,
+      return JSON.stringify({
+        to: "user",
+        message: parsedResponse.message,
       });
-      return parsedResponse;
     }
-
-    return response;
+    return parsedResponse;
   } catch (error) {
     console.log("⚠️ Error al parsear JSON:", error.message);
     return response;
@@ -126,7 +129,6 @@ export const runAgentTerminal = async () => {
 };
 
 export const runAgent = async (newMessage) => {
-  console.log("🎉 entro run agent");
   const response = await sendtoLLM(newMessage);
   console.log("response inicial", response);
   const processedResponse = await processLLMResponse(response);

@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import mockAppointments from "./mock/mockDates.js";
@@ -7,13 +8,13 @@ import {
   deleteAppointment,
   rescheduleAppointment,
 } from "./functions/handleAppointments.js";
-import { barbers, bussinessHours } from "./utils/utils.js";
+import { barbers, businessHours } from "./utils/utils.js";
 
 const typeDefs = `
   type Query {
     getAppointments: [appointment]
     getBarbers: [barber]
-    getBusinessHours: businessHours!
+    getBusinessHours: [businessHours]
   }
 
   type Mutation {
@@ -44,14 +45,10 @@ const typeDefs = `
   }
 
   type businessHours {
-  monday: [String!]!
-  tuesday: [String!]!
-  wednesday: [String!]!
-  thursday: [String!]!
-  friday: [String!]!
-  saturday: [String!]!
-  sunday: [String!]!
-}
+    id: ID!
+    day: String!
+    hours: [String!]!
+  }
 `;
 
 const resolvers = {
@@ -60,11 +57,10 @@ const resolvers = {
       return mockAppointments;
     },
     getBarbers: () => {
-      console.log("🎉 entro barbers", barbers);
       return barbers;
     },
     getBusinessHours: () => {
-      return bussinessHours;
+      return businessHours;
     },
   },
   Mutation: {
@@ -93,4 +89,4 @@ await startStandaloneServer(server, {
   listen: { port: 4000 },
 });
 
-//runAgentTerminal();
+runAgentTerminal();

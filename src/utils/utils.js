@@ -6,13 +6,13 @@ const getActualDate = () => {
 };
 
 export const days = [
-  "sunday",
-  "monday",
-  "tuesday",
-  "wednesday",
-  "thursday",
-  "friday",
-  "saturday",
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
 ];
 
 export const barbers = [
@@ -33,84 +33,116 @@ export const barbers = [
   },
 ];
 
-export const bussinessHours = {
-  monday: [
-    "09:00:00",
-    "10:00:00",
-    "11:00:00",
-    "12:00:00",
-    "14:00:00",
-    "15:00:00",
-    "16:00:00",
-    "17:00:00",
-    "18:00:00",
-    "19:00:00",
-  ],
-  tuesday: [
-    "09:00:00",
-    "10:00:00",
-    "11:00:00",
-    "12:00:00",
-    "14:00:00",
-    "15:00:00",
-    "16:00:00",
-    "17:00:00",
-    "18:00:00",
-    "19:00:00",
-  ],
-  wednesday: [
-    "09:00:00",
-    "10:00:00",
-    "11:00:00",
-    "12:00:00",
-    "14:00:00",
-    "15:00:00",
-    "16:00:00",
-    "17:00:00",
-    "18:00:00",
-    "19:00:00",
-  ],
-  thursday: [
-    "09:00:00",
-    "10:00:00",
-    "11:00:00",
-    "12:00:00",
-    "14:00:00",
-    "15:00:00",
-    "16:00:00",
-    "17:00:00",
-    "18:00:00",
-    "19:00:00",
-  ],
-  friday: [
-    "09:00:00",
-    "10:00:00",
-    "11:00:00",
-    "12:00:00",
-    "14:00:00",
-    "15:00:00",
-    "16:00:00",
-    "17:00:00",
-    "18:00:00",
-    "19:00:00",
-  ],
-  saturday: [
-    "09:00:00",
-    "10:00:00",
-    "11:00:00",
-    "12:00:00",
-    "14:00:00",
-    "15:00:00",
-    "16:00:00",
-    "17:00:00",
-    "18:00:00",
-    "19:00:00",
-  ],
-  sunday: [],
+const getBarbersNames = () => {
+  return barbers.map((barber) => barber.name).join(", ");
 };
 
+export const businessHours = [
+  {
+    id: 1,
+    day: "Monday",
+    hours: [
+      "09:00:00",
+      "10:00:00",
+      "11:00:00",
+      "12:00:00",
+      "14:00:00",
+      "15:00:00",
+      "16:00:00",
+      "17:00:00",
+      "18:00:00",
+      "19:00:00",
+    ],
+  },
+  {
+    id: 2,
+    day: "Tuesday",
+    hours: [
+      "09:00:00",
+      "10:00:00",
+      "11:00:00",
+      "12:00:00",
+      "14:00:00",
+      "15:00:00",
+      "16:00:00",
+      "17:00:00",
+      "18:00:00",
+      "19:00:00",
+    ],
+  },
+  {
+    id: 3,
+    day: "Wednesday",
+    hours: [
+      "09:00:00",
+      "10:00:00",
+      "11:00:00",
+      "12:00:00",
+      "14:00:00",
+      "15:00:00",
+      "16:00:00",
+      "17:00:00",
+      "18:00:00",
+      "19:00:00",
+    ],
+  },
+  {
+    id: 4,
+    day: "Thursday",
+    hours: [
+      "09:00:00",
+      "10:00:00",
+      "11:00:00",
+      "12:00:00",
+      "14:00:00",
+      "15:00:00",
+      "16:00:00",
+      "17:00:00",
+      "18:00:00",
+      "19:00:00",
+    ],
+  },
+  {
+    id: 5,
+    day: "Friday",
+    hours: [
+      "09:00:00",
+      "10:00:00",
+      "11:00:00",
+      "12:00:00",
+      "14:00:00",
+      "15:00:00",
+      "16:00:00",
+      "17:00:00",
+      "18:00:00",
+      "19:00:00",
+    ],
+  },
+  {
+    id: 6,
+    day: "Saturday",
+    hours: [
+      "09:00:00",
+      "10:00:00",
+      "11:00:00",
+      "12:00:00",
+      "14:00:00",
+      "15:00:00",
+      "16:00:00",
+      "17:00:00",
+      "18:00:00",
+      "19:00:00",
+    ],
+  },
+  {
+    id: 0,
+    day: "Sunday",
+    hours: [],
+  },
+];
+
 export const SYSTEM_PROMPT = `
-Eres un agente de inteligencia artificial encargado de agendar, eliminar o reprogramar citas.
+Eres un agente de inteligencia artificial encargado de agendar, eliminar o re-programar citas.
 Siempre estás interactuando con un sistema. Tienes la capacidad de realizar llamadas a funciones.
 Tu respuesta puede ser **una respuesta al usuario** o **una instrucción al sistema para ejecutar una función** o ambas. 
 
@@ -145,12 +177,12 @@ Tu respuesta debe estar en formato **JSON** con la siguiente estructura:
 
 **Nombre de función:** "confirmAppointment"
 **Argumentos:** "date" (Fecha en formato AAAA-MM-DDThh:mm:ss), "phone" (int con 10 números) 
-**Descripción:** Busca una cita y responde con su información y id, para que el usuario confirme si esa es la cita que desea eliminar o reprogramar.
-Si el usuario confirma, debes llamar a la función "deleteAppointment" para eliminar o "rescheduleAppointment" para reprogramar con el id devuelto.
+**Descripción:** Busca una cita y responde con su información y id, pregunta al usuario si esa es la cita que desea eliminar o re-programar..
+Si el usuario confirma, debes llamar a la función "deleteAppointment" para eliminar o "rescheduleAppointment" para re-programar con el id devuelto.
 
 **Nombre de función:** "rescheduleAppointment"
 **Argumentos:** "appointmentId" (ID), "newDate" (Nueva fecha de la cita en formato AAAA-MM-DDThh:mm:ss), "newBarber" (String con letras, opcional — si no se pasa, mantiene el barbero original)
-**Descripción:** Reprograma una cita existente a una nueva "newDate" y/u otro "newBarber".  
+**Descripción:** Re-programa una cita existente a una nueva "newDate" y/u otro "newBarber".  
 Responde con la cita nueva creada.
 
 **Nombre de función:** "deleteAppointment"  
@@ -167,11 +199,12 @@ Responde con la cita nueva creada.
 - Pregunta si tiene alguna preferencia de fecha u hora para su cita.
 - Pregunta si tiene alguna preferencia de barbero o no.
 - Antes de agendar una cita, **debes pedir el nombre y celular** del usuario. No agendes citas sin tener esos datos.
-- Para eliminar o reprogramar una cita, **debes pedir la fecha, HORA de la cita y el celular** del usuario. De lo contrario no se puede.
-- Si el usuario quiere eliminar o reprogramar y no da la hora exacta, pedirla, sin eso no se puede continuar.
+- Para eliminar o re-programar una cita, **debes pedir la fecha, HORA de la cita y el celular** del usuario. De lo contrario no se puede.
+- Para eliminar o re-programar una cita, primero debes confirmar la cita con la función "confirmAppointment". Al confirmar la cita, el sistema te devolverá el id de la cita.
+- Si el usuario quiere eliminar o re-programar y no da la hora exacta, pedirla, sin eso no se puede continuar.
 - Siempre responde en UTC-5
 - La fecha y hora actual que debes tomar es ${getActualDate()}
-- Los barberos posibles son: ${barbers}, si la persona no tiene preferencia elegir uno al azar
+- Los barberos posibles son: ${getBarbersNames()}, si la persona no tiene preferencia elegir uno al azar
 - Después de llamar una función, el sistema te devolverá el resultado:
    - Si "success": false, debes responder al usuario explicando el error y pedirle otra opción.
    - Si "success": true", debes confirmar la acción al usuario con detalles (fecha, hora, barbero).
