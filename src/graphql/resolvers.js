@@ -4,7 +4,7 @@ import {
   rescheduleAppointment,
 } from "../functions/handleAppointments.js";
 import { barbers, businessHours } from "../utils/utils.js";
-import { runAgent } from "../agent.js";
+import { runAgent } from "../agents/agent.js";
 import mockAppointments from "../mock/mockDates.js";
 
 export const resolvers = {

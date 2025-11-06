@@ -1,11 +1,11 @@
 import "dotenv/config";
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
-import { runAgentTerminal } from "./agent.js";
 
 import { typeDefs } from "./graphql/schema.js";
 import { resolvers } from "./graphql/resolvers.js";
 import { connectDB } from "./config/database.js";
+import { runAgentTerminal } from "./agents/agent.js";
 
 try {
   // Connect database
@@ -30,7 +30,7 @@ try {
 
   console.log(`🚀 Server ready at ${url}`);
 
-  //runAgentTerminal();
+  runAgentTerminal();
 } catch (error) {
   console.error("Failed to start server:", error);
 }

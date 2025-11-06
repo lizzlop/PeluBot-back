@@ -1,6 +1,5 @@
 import mockAppointments from "../mock/mockDates.js";
 import { barbers, businessHours, days } from "../utils/utils.js";
-
 // Function to check which barbers are available in a date
 export const checkBarbersAvailability = (targetDate) => {
   const availableBarbers = barbers.filter(

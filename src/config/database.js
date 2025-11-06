@@ -4,10 +4,7 @@ export const connectDB = async () => {
   try {
     const mongoUri =
       process.env.MONGODB_URI || "mongodb://localhost:27017/peluBot";
-    await mongoose.connect(mongoUri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await mongoose.connect(mongoUri);
     console.log("🎯 MongoDB Local CONECTADO - Base de datos: peluBot");
   } catch (error) {
     console.error("Error conectando a MongoDB:", error.message);
