@@ -1,16 +1,6 @@
 import mockAppointments from "../mock/mockDates.js";
-import { barbers, businessHours, days } from "../utils/utils.js";
-// Function to check which barbers are available in a date
-export const checkBarbersAvailability = (targetDate) => {
-  const availableBarbers = barbers.filter(
-    (barber) =>
-      !mockAppointments.some(
-        (appointment) =>
-          appointment.barber == barber.name && appointment.date === targetDate
-      )
-  );
-  return availableBarbers.map((barber) => barber.name).join(", ");
-};
+import { businessHours, days } from "../utils/utils.js";
+import { checkBarbersAvailability, isBarberOkay } from "./barberHelpers.js";
 
 // Function to check if an appointment is available with a barber
 const isAppointmentTaken = (date, barber) => {
@@ -48,6 +38,8 @@ const isScheduleOkay = (date) => {
   const weekDay = days[appointmentDate.getDay()];
   const availableHours =
     businessHours.find((day) => day.day === weekDay)?.hours || [];
+  console.log("🎉 businessHours", businessHours);
+  console.log("🎉 availableHours", availableHours);
   if (!availableHours || availableHours.length === 0) {
     return {
       success: false,
@@ -78,7 +70,9 @@ const isScheduleOkay = (date) => {
 // Function to create appointments
 export const createAppointment = (name, barber, date, phone, message) => {
   const checkAppointment =
-    isScheduleOkay(date) || isAppointmentTaken(date, barber);
+    isBarberOkay(barber) ||
+    isScheduleOkay(date) ||
+    isAppointmentTaken(date, barber);
   console.log("checkApp", checkAppointment);
   if (checkAppointment) return checkAppointment;
 

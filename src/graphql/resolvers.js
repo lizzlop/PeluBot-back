@@ -3,9 +3,10 @@ import {
   deleteAppointment,
   rescheduleAppointment,
 } from "../functions/handleAppointments.js";
-import { barbers, businessHours } from "../utils/utils.js";
+import { businessHours } from "../utils/utils.js";
 import { runAgent } from "../agents/agent.js";
 import mockAppointments from "../mock/mockDates.js";
+import { getBarbers } from "../functions/barberHelpers.js";
 
 export const resolvers = {
   Query: {
@@ -13,7 +14,7 @@ export const resolvers = {
       return mockAppointments;
     },
     getBarbers: () => {
-      return barbers;
+      return getBarbers();
     },
     getBusinessHours: () => {
       return businessHours;

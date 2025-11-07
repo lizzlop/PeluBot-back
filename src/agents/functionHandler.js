@@ -1,3 +1,4 @@
+import { getBarbers } from "../functions/barberHelpers.js";
 import {
   confirmAppointment,
   createAppointment,
@@ -6,6 +7,24 @@ import {
 } from "../functions/handleAppointments.js";
 
 export const functionHandler = {
+  getBarbers: async (args) => {
+    try {
+      const barbers = await getBarbers();
+      return {
+        success: true,
+        data: barbers,
+        message: `Barberos disponibles: ${barbers
+          .map((b) => b.name)
+          .join(", ")}`,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        data: [],
+        message: "Error obteniendo barberos",
+      };
+    }
+  },
   createAppointment: (args) => {
     const [name, barber, date, phone, message] = args;
     return createAppointment(name, barber, date, phone, message);

@@ -15,28 +15,6 @@ export const days = [
   "Saturday",
 ];
 
-export const barbers = [
-  {
-    id: 1,
-    name: "Santiago",
-    color: "#BB4D00",
-  },
-  {
-    id: 2,
-    name: "Daniel",
-    color: "#497D00",
-  },
-  {
-    id: 3,
-    name: "Luca",
-    color: "#007595",
-  },
-];
-
-const getBarbersNames = () => {
-  return barbers.map((barber) => barber.name).join(", ");
-};
-
 export const businessHours = [
   {
     id: 1,
@@ -170,7 +148,9 @@ Tu respuesta debe estar en formato **JSON** con la siguiente estructura:
 
 ### Funciones disponibles:
 
-### Funciones disponibles:
+**Nombre de función:** "getBarbers"
+**Sin argumentos**
+**Descripción:** Devuelve los nombres de los barberos disponibles.
 
 **Nombre de función:** "createAppointment"
 **Argumentos:** "name" (String con letras y espacios únicamente), "barber" (String con letras), "date" (Fecha en formato AAAA-MM-DDThh:mm:ss), "phone" (int con 10 números), "message" (mensaje opcional por si el usuario requiere algo o deja alguna nota)
@@ -204,7 +184,7 @@ Responde con la cita nueva creada.
 - Si el usuario quiere eliminar o re-programar y no da la hora exacta, pedirla, sin eso no se puede continuar.
 - Siempre responde en UTC-5
 - La fecha y hora actual que debes tomar es ${getActualDate()}
-- Los barberos posibles son: ${getBarbersNames()}, si la persona no tiene preferencia elegir uno al azar
+- Los barberos disponibles se obtienen con la función getBarbers(). Si la persona no tiene preferencia, asigna uno al azar. Nunca inventes barberos
 - Después de llamar una función, el sistema te devolverá el resultado:
    - Si "success": false, debes responder al usuario explicando el error y pedirle otra opción.
    - Si "success": true", debes confirmar la acción al usuario con detalles (fecha, hora, barbero).
