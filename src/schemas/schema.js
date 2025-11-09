@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 
 export const appointmentSchema = new mongoose.Schema({
-  id: Number,
   name: String,
   barber: String,
   date: String,
@@ -9,8 +8,9 @@ export const appointmentSchema = new mongoose.Schema({
   message: String,
 });
 
+export const Appointment = mongoose.model("Appointment", appointmentSchema);
+
 const barberSchema = new mongoose.Schema({
-  id: Number,
   name: String,
   barbershopId: Number,
   color: String,
@@ -19,3 +19,10 @@ const barberSchema = new mongoose.Schema({
 });
 
 export const Barber = mongoose.model("Barber", barberSchema);
+
+const barbershopSchema = new mongoose.Schema({
+  name: String,
+  businessHours: Array,
+});
+
+export const Barbershop = mongoose.model("Barbershop", barbershopSchema);

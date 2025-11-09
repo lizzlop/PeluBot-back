@@ -3,21 +3,23 @@ import {
   deleteAppointment,
   rescheduleAppointment,
 } from "../functions/handleAppointments.js";
-import { businessHours } from "../utils/utils.js";
 import { runAgent } from "../agents/agent.js";
-import mockAppointments from "../mock/mockDates.js";
 import { getBarbers } from "../functions/barberHelpers.js";
+import {
+  getAppointments,
+  getBusinessHours,
+} from "../functions/appointmentHelpers.js";
 
 export const resolvers = {
   Query: {
     getAppointments: () => {
-      return mockAppointments;
+      return getAppointments();
     },
     getBarbers: () => {
       return getBarbers();
     },
     getBusinessHours: () => {
-      return businessHours;
+      return getBusinessHours();
     },
   },
   Mutation: {

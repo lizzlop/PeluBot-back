@@ -1,10 +1,3 @@
-const getActualDate = () => {
-  const now = new Date();
-  return new Date(
-    now.toLocaleString("en-US", { timeZone: "America/Bogota" })
-  ).toISOString();
-};
-
 export const days = [
   "Sunday",
   "Monday",
@@ -15,109 +8,12 @@ export const days = [
   "Saturday",
 ];
 
-export const businessHours = [
-  {
-    id: 1,
-    day: "Monday",
-    hours: [
-      "09:00:00",
-      "10:00:00",
-      "11:00:00",
-      "12:00:00",
-      "14:00:00",
-      "15:00:00",
-      "16:00:00",
-      "17:00:00",
-      "18:00:00",
-      "19:00:00",
-    ],
-  },
-  {
-    id: 2,
-    day: "Tuesday",
-    hours: [
-      "09:00:00",
-      "10:00:00",
-      "11:00:00",
-      "12:00:00",
-      "14:00:00",
-      "15:00:00",
-      "16:00:00",
-      "17:00:00",
-      "18:00:00",
-      "19:00:00",
-    ],
-  },
-  {
-    id: 3,
-    day: "Wednesday",
-    hours: [
-      "09:00:00",
-      "10:00:00",
-      "11:00:00",
-      "12:00:00",
-      "14:00:00",
-      "15:00:00",
-      "16:00:00",
-      "17:00:00",
-      "18:00:00",
-      "19:00:00",
-    ],
-  },
-  {
-    id: 4,
-    day: "Thursday",
-    hours: [
-      "09:00:00",
-      "10:00:00",
-      "11:00:00",
-      "12:00:00",
-      "14:00:00",
-      "15:00:00",
-      "16:00:00",
-      "17:00:00",
-      "18:00:00",
-      "19:00:00",
-    ],
-  },
-  {
-    id: 5,
-    day: "Friday",
-    hours: [
-      "09:00:00",
-      "10:00:00",
-      "11:00:00",
-      "12:00:00",
-      "14:00:00",
-      "15:00:00",
-      "16:00:00",
-      "17:00:00",
-      "18:00:00",
-      "19:00:00",
-    ],
-  },
-  {
-    id: 6,
-    day: "Saturday",
-    hours: [
-      "09:00:00",
-      "10:00:00",
-      "11:00:00",
-      "12:00:00",
-      "14:00:00",
-      "15:00:00",
-      "16:00:00",
-      "17:00:00",
-      "18:00:00",
-      "19:00:00",
-    ],
-  },
-  {
-    id: 0,
-    day: "Sunday",
-    hours: [],
-  },
-];
+const getActualDate = () => {
+  const now = new Date();
+  return new Date(
+    now.toLocaleString("en-US", { timeZone: "America/Bogota" })
+  ).toISOString();
+};
 
 export const SYSTEM_PROMPT = `
 Eres un agente de inteligencia artificial encargado de agendar, eliminar o re-programar citas.

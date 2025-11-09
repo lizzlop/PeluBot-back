@@ -6,6 +6,14 @@ import { typeDefs } from "./graphql/schema.js";
 import { resolvers } from "./graphql/resolvers.js";
 import { connectDB } from "./config/database.js";
 import { runAgentTerminal } from "./agents/agent.js";
+import {
+  getAppointments,
+  getBusinessHours,
+} from "./functions/appointmentHelpers.js";
+import {
+  createAppointment,
+  deleteAppointment,
+} from "./functions/handleAppointments.js";
 
 try {
   // Connect database
@@ -30,7 +38,14 @@ try {
 
   console.log(`🚀 Server ready at ${url}`);
 
-  runAgentTerminal();
+  // await createAppointment(
+  //   "Liss",
+  //   "Santiago",
+  //   "2025-11-15T12:00:00",
+  //   "3147614111",
+  //   ""
+  // );
+  //runAgentTerminal();
 } catch (error) {
   console.error("Failed to start server:", error);
 }
