@@ -4,7 +4,7 @@ export const appointmentSchema = new mongoose.Schema({
   name: String,
   barber: String,
   date: String,
-  phone: Number,
+  phone: String,
   message: String,
 });
 

@@ -9,6 +9,7 @@ import {
   getAppointments,
   getBusinessHours,
 } from "../functions/appointmentHelpers.js";
+import { Barber } from "../schemas/schema.js";
 
 export const resolvers = {
   Query: {
@@ -20,6 +21,11 @@ export const resolvers = {
     },
     getBusinessHours: () => {
       return getBusinessHours();
+    },
+  },
+  Appointment: {
+    barberDetails: async (appointment) => {
+      return await Barber.findOne({ name: appointment.barber });
     },
   },
   Mutation: {

@@ -13,22 +13,23 @@ export const typeDefs = `
   }
 
   type Appointment {
-    id: ID
+    _id: ID
     name: String
     barber: String
+    barberDetails: Barber
     date: String
-    phone: Int
+    phone: String
     message: String
   }
 
   type Barber {
-    id: ID!
+    _id: ID
     name: String!
     color: String
   }
 
   type BusinessHours {
-    id: ID!
+    _id: ID
     day: String!
     hours: [String!]!
   }

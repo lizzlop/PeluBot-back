@@ -1,7 +1,5 @@
-import mockAppointments from "../mock/mockDates.js";
 import { Appointment } from "../schemas/schema.js";
 import {
-  getAppointments,
   getFirstAppointment,
   isAppointmentTaken,
   isScheduleOkay,
@@ -16,11 +14,13 @@ export const createAppointment = async (name, barber, date, phone, message) => {
     isAppointmentTaken(date, barber),
   ]);
   console.log("checkApp", barberResult, scheduleResult, appointmentResult);
-  const error = [barberResult, scheduleResult, appointmentResult].find(
-    (result) => result && !result.success
-  );
 
-  if (error) return error;
+  if (barberResult || scheduleResult || appointmentResult) {
+    const error = [barberResult, scheduleResult, appointmentResult].find(
+      (result) => result && !result.success
+    );
+    if (error) return error;
+  }
 
   try {
     const newAppointment = await Appointment.create({
@@ -37,7 +37,6 @@ export const createAppointment = async (name, barber, date, phone, message) => {
     };
   } catch (error) {
     console.error("❌ Error creando cita:", error);
-    return { success: false, error: error.message };
   }
 };
 
@@ -61,35 +60,6 @@ export const confirmAppointment = async (date, phone) => {
   }
 };
 
-// Function to reschedule an appointment
-export const rescheduleAppointment = (
-  appointmentId,
-  newDate,
-  newBarber = ""
-) => {
-  const appointmentToReschedule = mockAppointments.find(
-    (app) => app.id == appointmentId
-  );
-  const newAppointment = createAppointment(
-    appointmentToReschedule.name,
-    newBarber || appointmentToReschedule.barber,
-    newDate,
-    appointmentToReschedule.phone,
-    "Cita re-programada"
-  );
-  const indexToRemove = mockAppointments.findIndex(
-    (appointment) => appointment.id == appointmentId
-  );
-  if (indexToRemove !== -1) {
-    mockAppointments.splice(indexToRemove, 1);
-  }
-  return {
-    success: true,
-    message: `La cita fue re-programada exitosamente`,
-    appointment: newAppointment.appointment,
-  };
-};
-
 // Function to delete an appointment
 export const deleteAppointment = async (appointmentId) => {
   const result = await Appointment.deleteOne({
@@ -105,5 +75,51 @@ export const deleteAppointment = async (appointmentId) => {
       success: false,
       message: `La cita no se encontró para ser eliminada`,
     };
+  }
+};
+
+// Function to reschedule an appointment
+export const rescheduleAppointment = async (
+  appointmentId,
+  newDate,
+  newBarber = ""
+) => {
+  let appointmentToReschedule;
+  let newAppointment;
+
+  try {
+    appointmentToReschedule = await getFirstAppointment({
+      _id: appointmentId,
+    });
+
+    if (!appointmentToReschedule) {
+      return {
+        success: false,
+        message: "No se encontró la cita especificada",
+      };
+    }
+
+    const deleteResult = await deleteAppointment(appointmentId);
+    if (!deleteResult.success) {
+      return deleteResult;
+    }
+    newAppointment = await createAppointment(
+      appointmentToReschedule.name,
+      newBarber || appointmentToReschedule.barber,
+      newDate,
+      appointmentToReschedule.phone,
+      "Cita re-programada"
+    );
+
+    if (!newAppointment.success) {
+      return newAppointment;
+    }
+    return {
+      success: true,
+      message: "La cita fue re-programada exitosamente",
+      appointment: newAppointment.appointment,
+    };
+  } catch (error) {
+    console.error("❌ Error creando cita:", error);
   }
 };
