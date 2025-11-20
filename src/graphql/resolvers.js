@@ -30,7 +30,7 @@ export const resolvers = {
   },
   Mutation: {
     createAppointment: (_, args) => {
-      const { name, barber, date, phone, message } = args;
+      const { name, barber, date, phone, message } = args.input;
       return createAppointment(name, barber, date, phone, message);
     },
     rescheduleAppointment: (_, args) => {

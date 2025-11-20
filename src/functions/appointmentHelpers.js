@@ -2,20 +2,15 @@ import { Appointment, Barbershop } from "../schemas/schema.js";
 import { days } from "../utils/utils.js";
 import { checkBarbersAvailability } from "./barberHelpers.js";
 
-let businessHours = [];
-
 // Function to bring the barbershop info from the BD
 export const getBusinessHours = async () => {
-  if (businessHours.length <= 0) {
-    try {
-      const barberInfo = await Barbershop.findOne({ name: "Barbería Central" })
-        .select("businessHours")
-        .lean();
-      businessHours = barberInfo.businessHours;
-    } catch (error) {
-      console.error("❌ Error obteniendo horarios:", error);
-    }
-    return businessHours;
+  try {
+    const barberInfo = await Barbershop.findOne({ name: "Barbería Central" })
+      .select("businessHours")
+      .lean();
+    return barberInfo.businessHours;
+  } catch (error) {
+    console.error("❌ Error obteniendo horarios:", error);
   }
 };
 

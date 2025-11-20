@@ -1,8 +1,5 @@
 import { Barber } from "../schemas/schema.js";
 import { getAppointments } from "./appointmentHelpers.js";
-
-//TODO: Mirar como disminuir los llamados a la BD
-
 // Function to bring the barbers from the BD
 export const getBarbers = async () => {
   try {
@@ -30,8 +27,10 @@ export const isBarberOkay = async (selectedBarber) => {
 
 // Function to check which barbers are available in a date
 export const checkBarbersAvailability = async (targetDate) => {
-  const barbers = await getBarbers();
-  const appointments = await getAppointments();
+  const [barbers, appointments] = await Promise.all([
+    getBarbers(),
+    getAppointments(),
+  ]);
 
   const availableBarbers = barbers.filter(
     (barber) =>

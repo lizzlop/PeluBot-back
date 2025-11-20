@@ -41,9 +41,11 @@ const sendtoLLM = async (content) => {
 const processLLMResponse = async (response) => {
   try {
     const parsedResponse = JSON.parse(response);
+    console.log("🎉 parsedResponse", parsedResponse);
 
     // Case 1: The model wants to execute a function call
     if (parsedResponse.to === "system" && parsedResponse.function_call) {
+      console.log("🎉 system");
       const { function: functionName, arguments: args } =
         parsedResponse.function_call;
 
@@ -61,13 +63,12 @@ const processLLMResponse = async (response) => {
 
     // Case 2: The model wants to reply to the user
     if (parsedResponse.to === "user") {
+      console.log("🎉 user");
       return JSON.stringify({
         to: "user",
         message: parsedResponse.message,
       });
     }
-
-    return parsedResponse;
   } catch (error) {
     console.error("⚠️ Error al procesar respuesta:", error.message);
   }
