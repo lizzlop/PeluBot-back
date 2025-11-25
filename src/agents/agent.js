@@ -1,6 +1,6 @@
 import "dotenv/config";
 import readline from "node:readline";
-import { SYSTEM_PROMPT } from "../utils/utils.js";
+import { sanitizeJson, SYSTEM_PROMPT } from "../utils/utils.js";
 import { createOpenAIClient } from "./openIAClient.js";
 import { executeFunction } from "./functionHandler.js";
 
@@ -40,35 +40,49 @@ const sendtoLLM = async (content) => {
 // Function to process the LLM response and call functions if necessary
 const processLLMResponse = async (response) => {
   try {
-    const parsedResponse = JSON.parse(response);
-    console.log("🎉 parsedResponse", parsedResponse);
+    let currentResponse = response;
+    let safetyCounter = 0;
+    const MAX_FOLLOW_UPS = 10;
 
-    // Case 1: The model wants to execute a function call
-    if (parsedResponse.to === "system" && parsedResponse.function_call) {
-      console.log("🎉 system");
-      const { function: functionName, arguments: args } =
-        parsedResponse.function_call;
+    while (safetyCounter < MAX_FOLLOW_UPS) {
+      safetyCounter += 1;
+      const parsedResponse = JSON.parse(sanitizeJson(currentResponse));
 
-      const result = await executeFunction(functionName, args);
+      // Case 1: The model wants to execute a function call
+      if (parsedResponse.to === "system" && parsedResponse.function_call) {
+        const { function: functionName, arguments: args } =
+          parsedResponse.function_call;
 
-      // Send the result back to the model
-      const followUpResponse = await sendtoLLM(
-        JSON.stringify({
-          to: "system",
-          message: `Resultado de ${functionName}: ${JSON.stringify(result)}`,
-        })
+        const result = await executeFunction(functionName, args);
+
+        // Send the result back to the model
+        currentResponse = await sendtoLLM(
+          JSON.stringify({
+            to: "system",
+            message: `Resultado de ${functionName}: ${JSON.stringify(result)}`,
+          })
+        );
+        continue;
+      }
+
+      // Case 2: The model wants to reply to the user
+      if (parsedResponse.to === "user") {
+        console.log("🎉 user");
+        return JSON.stringify({
+          to: "user",
+          message: parsedResponse.message,
+        });
+      }
+
+      console.error(
+        "⚠️ Respuesta sin destino manejable, se detiene el ciclo:",
+        parsedResponse
       );
-      return followUpResponse;
+      return currentResponse;
     }
 
-    // Case 2: The model wants to reply to the user
-    if (parsedResponse.to === "user") {
-      console.log("🎉 user");
-      return JSON.stringify({
-        to: "user",
-        message: parsedResponse.message,
-      });
-    }
+    console.warn("⚠️ Se alcanzó el límite de follow-ups permitidos");
+    return currentResponse;
   } catch (error) {
     console.error("⚠️ Error al procesar respuesta:", error.message);
   }

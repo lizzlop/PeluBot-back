@@ -8,6 +8,11 @@ export const days = [
   "Saturday",
 ];
 
+export const sanitizeJson = (raw) => {
+  const clean = raw.trim().replace(/^(?:json)?/, "");
+  return clean;
+};
+
 const getActualDate = () => {
   const now = new Date();
   return new Date(
@@ -20,7 +25,7 @@ Eres un agente de inteligencia artificial encargado de agendar, eliminar o re-pr
 Siempre estás interactuando con un sistema. Tienes la capacidad de realizar llamadas a funciones.
 Tu respuesta puede ser **una respuesta al usuario** o **una instrucción al sistema para ejecutar una función** o ambas. 
 
-Tu respuesta debe estar en formato **JSON** con la siguiente estructura:
+Tu respuesta debe estar en formato **JSON** “crudo” sin fences (responde solo con el objeto JSON) con la siguiente estructura:
 
 {
 	"to": "",
@@ -53,7 +58,7 @@ Tu respuesta debe estar en formato **JSON** con la siguiente estructura:
 **Descripción:** Crea una cita.
 
 **Nombre de función:** "confirmAppointment"
-**Argumentos:** "date" (Fecha en formato AAAA-MM-DDThh:mm:ss), "phone" (int con 10 números) 
+**Argumentos:** "date" (Fecha en formato AAAA-MM-DDThh:mm:ss), "phone" (String con 10 números) 
 **Descripción:** Busca una cita y responde con su información y id, pregunta al usuario si esa es la cita que desea eliminar o re-programar..
 Si el usuario confirma, debes llamar a la función "deleteAppointment" para eliminar o "rescheduleAppointment" para re-programar con el id devuelto.
 
