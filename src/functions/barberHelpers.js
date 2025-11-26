@@ -12,6 +12,18 @@ export const getBarbers = async () => {
   }
 };
 
+// Function to inspect the barbers name in case is random
+export const inspectBarber = async (barber, date) => {
+  if (barber == "No tengo preferencia" || barber == "random") {
+    const availableBarbers = await checkBarbersAvailability(date);
+    return availableBarbers[
+      Math.trunc(Math.random() * availableBarbers.length)
+    ];
+  } else {
+    return barber;
+  }
+};
+
 // Function to check if the input barber is one of the barbers in the barbershop
 export const isBarberOkay = async (selectedBarber) => {
   const barbers = await getBarbers();
@@ -40,5 +52,5 @@ export const checkBarbersAvailability = async (targetDate) => {
       )
   );
 
-  return availableBarbers.map((barber) => barber.name).join(", ");
+  return availableBarbers.map((barber) => barber.name);
 };

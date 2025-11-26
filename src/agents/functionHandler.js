@@ -8,37 +8,27 @@ import {
 
 export const functionHandler = {
   getBarbers: async (args) => {
-    try {
-      const barbers = await getBarbers();
-      return {
-        success: true,
-        data: barbers,
-        message: `Barberos disponibles: ${barbers
-          .map((b) => b.name)
-          .join(", ")}`,
-      };
-    } catch (error) {
-      return {
-        success: false,
-        data: [],
-        message: "Error obteniendo barberos",
-      };
-    }
+    const barbers = await getBarbers();
+    return {
+      success: true,
+      data: barbers,
+      message: `Barberos disponibles: ${barbers.map((b) => b.name).join(", ")}`,
+    };
   },
-  createAppointment: (args) => {
+  createAppointment: async (args) => {
     const [name, barber, date, phone, message] = args;
-    return createAppointment(name, barber, date, phone, message);
+    return await createAppointment(name, barber, date, phone, message);
   },
-  confirmAppointment: (args) => {
+  confirmAppointment: async (args) => {
     const [date, phone] = args;
-    return confirmAppointment(date, phone);
+    return await confirmAppointment(date, phone);
   },
-  rescheduleAppointment: (args) => {
+  rescheduleAppointment: async (args) => {
     const [appointmentId, newDate, newBarber] = args;
-    return rescheduleAppointment(appointmentId, newDate, newBarber);
+    return await rescheduleAppointment(appointmentId, newDate, newBarber);
   },
-  deleteAppointment: (args) => {
-    return deleteAppointment(args);
+  deleteAppointment: async (args) => {
+    return await deleteAppointment(args);
   },
 };
 

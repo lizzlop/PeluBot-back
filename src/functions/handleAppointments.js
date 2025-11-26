@@ -4,14 +4,15 @@ import {
   isAppointmentTaken,
   isScheduleOkay,
 } from "./appointmentHelpers.js";
-import { isBarberOkay } from "./barberHelpers.js";
+import { inspectBarber, isBarberOkay } from "./barberHelpers.js";
 
 // Function to create appointments
 export const createAppointment = async (name, barber, date, phone, message) => {
+  const inspectedBarber = await inspectBarber(barber, date);
   const [barberResult, scheduleResult, appointmentResult] = await Promise.all([
-    isBarberOkay(barber),
+    isBarberOkay(inspectedBarber),
     isScheduleOkay(date),
-    isAppointmentTaken(date, barber),
+    isAppointmentTaken(date, inspectedBarber),
   ]);
   console.log("checkApp", barberResult, scheduleResult, appointmentResult);
 
@@ -25,7 +26,7 @@ export const createAppointment = async (name, barber, date, phone, message) => {
   try {
     const newAppointment = await Appointment.create({
       name: name,
-      barber: barber,
+      barber: inspectedBarber,
       date: date,
       phone: phone,
       message: message,
